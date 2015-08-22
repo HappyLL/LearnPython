@@ -50,7 +50,7 @@
 # 	@height.setter
 # 	def height(self, value):
 # 	    self._height = value
-	
+
 # 	def prin(self):
 # 		print(self._width,self._height)
 
@@ -185,7 +185,7 @@
 # for name,member in Month.__members__.items():
 # 	print(name,'=>',member,',',member.value)
 
-#枚举类__继承Enum 
+#枚举类__继承Enum
 #from enum import Enum,unique
 #装饰器检测是否有重复的枚举值
 #不能生成实例，直接用类直接调用(类似于静态变量)
@@ -315,7 +315,7 @@
 #u = User(id=12345, name='Michael', email='test@orm.org', password='my-pwd')
 #保存到数据库：
 #并利用了父类到子类的多态
-#u.save() 
+#u.save()
 #对orm框架的理解
 #定义metaclass-->创建类--->创建实例
 #可以动态的去创建那些我们需要的类
@@ -415,6 +415,102 @@
 # def main():
 # 	foo('0')
 # main()
+
+#单元测试
+#重写一个Dict模块 用unittest.TestCase的继承类来判断当前写的模块是否存在错误
+# import unittest
+# class Dict(dict):
+# 	def __init__(self,**kw):
+# 		super().__init__(self,**kw);
+#
+# 	def __getattr__(self, key):
+# 		try:
+# 			return self[key]
+# 		except KeyError:
+# 			raise ArithmeticError("Error Key")
+# 	def __setattr__(self, key, value):
+# 		self[key] = value
+# #所有要测试都必须加上test__
+# class Test(unittest.TestCase):
+# 	#检测所要检测类的初始化问题
+# 	def test__init(self):
+# 		d = Dict(a = 1,b = 'test')
+# 		self.assertEquals(d.a,1)
+# 		self.assertEquals(d.b,'test')
+# 		self.assertTrue(isinstance(d,Dict))
+# 	#检测当前的key值是否被正确的赋值
+# 	def test__key(self):
+# 		d = Dict()
+# 		d['key'] = 'value'
+# 		self.assertEquals(d.key,'value')
+# 	#测试属性 判断当前动态增加的属性是否存在并且判断其对应的value值正不正确
+# 	def test__attr(self):
+# 		d = Dict()
+# 		d.key = 'value'
+# 		self.assertTrue('key'in d)
+# 		self.assertEquals(d['key'],'value')
+# 	#判断是否会产生键错误时当键发生错误时会抛一个错误
+# 	def test_keyerror(self):
+# 		d = Dict()
+# 		with self.assertRaises(KeyError):
+# 			value = d['empty']
+# 	#测试当属性为空会不会报错,当属性不存在时会抛一个属性错误
+# 	def test__attr(self):
+# 		d = Dict()
+# 		with self.assertRaises(AttributeError):
+# 			value = d.empty
+# 	if __name__ == '__main__':
+# 		unittest.main()
+
+# with语句
+# with 某个类的对象:
+#      语句
+#是执行表达式后在执行语句(有时候表达式内有中断)
+#该类必须要实现两个部分:__enter__,__exit__
+#整个with语句先调用__enter__，调用语句,在调用__exit__
+# class A:
+# 	def __init__(self):
+# 		pass
+# 	def __enter__(self):
+# 		print('enter')
+# 	def __exit__(self, exc_type, exc_val, exc_tb):
+# 		print('exit')
+#
+# with A():
+# 	print('With')
+
+#文件的IO(类似于C语言)
+#打开文件__只读(如果没有文件则报错)
+#返回的是文件描述符
+#f = open('E:\python\IO.txt','r',encoding='gbk')
+#read函数读能如果默认是读文件内全部的内容
+#print(f.read())
+#f.close()
+#文件打开时要注意关闭但有时在文件打开时会出错所以需要判断异常__方法1
+# try:
+# 	f = open('E:\python\IO.txt','r',encoding='gbk')
+# 	print(f.read())
+# finally:
+# 	f.close()
+#文件打开时要注意关闭但有时在文件打开时会出错所以需要判断异常__方法2_with
+# with open('E:\python\IO.txt','r',encoding='gbk') as f:
+# 	print(f.read())
+#读文件时还可以用ReadLine:表示一行一行读
+#ReadLines:表示将所有行都放在List里
+# with open('E:\python\IO.txt','r',encoding='gbk') as f:
+# 	print(f.readlines())
+#表示以二进制流打开
+#with open('E:\python\IO.txt','rb',encoding='gbk') as f
+#写文件
+with open('E:\python\IO.txt','w',encoding='gbk') as f:
+	f.write('hahahahahah')
+
+
+
+
+
+
+
 
 
 
