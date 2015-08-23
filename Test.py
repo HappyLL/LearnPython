@@ -1,4 +1,4 @@
-#素筛法_filter
+# 素筛法_filter
 # def  _odd_iter():
 # 	n = 1
 # 	while True:
@@ -626,25 +626,94 @@
 #      print(s.strip())
 #BytesIO 内存读写数据(StringIO为保存所要存储和提供对应的值)_二进制流
 #BytesIO只能用来读或用来写不能两者同时
-from io import BytesIO
+#from io import BytesIO
 # f = BytesIO()
 # f.write('中文\n英文\n法文\n'.encode('utf-8'))
 # print(f.getvalue())
 # f = BytesIO()
 # f.write(b'\xe4\xb8\xad\xe6\x96\x87\n\xe8\x8b\xb1\xe6\x96\x87\n\xe6\xb3\x95\xe6\x96\x87\n')
 # print(f.read())
+#实现ls -l的效果得到当前目录文件的详细信息
+#os stat返回的是文件信息        #st_gid:组ID
+#st_mode:文件的权限            #st_size:文件的大小
+#st_ino:文件的索引号           #st_atime:文件上次访问时间
+#st_dev:文件的设备             #st_mtime:文件修改时间
+#st_nlink:文件的链接号         #st_ctime:文件创建时间
+#st_uid:用户ID
+# import os
+# import time
+# L = [f for f in os.listdir('.') if os.path.isfile(f)]
+# for f in L:
+#     print(os.stat(f))
+#实现对指定字符串找出所有包含该字符串的文件名的文件
+#filepath表示当前的路径
+#prepath表示之前的路径
+# import os
+#
+#
+# def getret(filepath, prepath):
+#     #拿到当前路径的所有的文件夹
+#    LDIR = [f for f in os.listdir(filepath) if os.path.isdir(f)]
+#    #print(filepath)
+#    LFile = [f for f in os.listdir(filepath) if os.path.isdir(f)==False and val.lower() in f]
+#    #print(LFile)
+#    for name in LFile:
+#         print('%s/%s' % (prepath, name))
+#    if len(LDIR)>0:
+#         for name in LDIR:
+#             getret(filepath+"/"+name, prepath+'/'+name)
+# val = input()
+# print(os.getcwd())
+# getret(os.getcwd(), '')
 
-
-
-
-
-
-
-
-
-
-
-
+#序列化反序列化
+#序列化将对应的对象进行编码
+#反序列化就是解码
+# import pickle
+# d = dict(name = 'Bob',age = 20,score = 80)
+# #序列化
+# f = open('/Users/lijiayueee/Documents/learnPython/pickle.txt','wb')
+# #序列化d
+# pickle.dump(d,f)
+# f.close();
+# #反序列化
+# f = open('/Users/lijiayueee/Documents/learnPython/pickle.txt','rb')
+# d = pickle.load(f)
+# f.close()
+# print(d)
+#将python转化为json
+# import json
+# f = open('/Users/lijiayueee/Documents/learnPython/json','w+')
+# d = dict(name = 'Bob' , age = 20 ,score = 80)
+# json.dump(d,f)
+# f.close()
+#
+# f = open('/Users/lijiayueee/Documents/learnPython/json','r')
+# d = json.load(f)
+# f.close()
+# print(d)
+#我们可以讲任一一个对象通过将自身的__dict__传给JSON即可得到对应的序列(__dict__:存储则这个实力中所有的属性和对应的值)
+# import json
+# class Student:
+#     def __init__(self, name, age, score):
+#         self.__name__ = name
+#         self.__age__ = age
+#         self.__score__ = score
+#
+#     def __str__(self):
+#         return '(%s,%s,%s)' %(self.__name__,self.__age__,self.__score__)
+#
+# s = Student('Happy',12,88)
+# s.num = 50
+# f = open('/Users/lijiayueee/Documents/learnPython/json','w')
+# json.dump(s,f,default= lambda obj: obj.__dict__)
+# f.close()
+#
+# f = open('/Users/lijiayueee/Documents/learnPython/json','r')
+# d = json.load(f)
+# f.close()
+# print(d)
+#可通过d字典去初始化
 
 
 
