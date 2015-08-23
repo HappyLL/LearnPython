@@ -501,11 +501,32 @@
 # 	print(f.readlines())
 #表示以二进制流打开
 #with open('E:\python\IO.txt','rb',encoding='gbk') as f
-#写文件
-with open('E:\python\IO.txt','w',encoding='gbk') as f:
-	f.write('hahahahahah')
-
-
+#写文件 write 向文件写数据会覆盖源文件的内容
+# with open('E:\python\IO.txt','w',encoding='gbk') as f:
+# 	f.write("dhakhdakshdkj")
+#StringIO 内存读写数据(StringIO为保存所要存储和提供对应的值)_字符串流
+#StringIO只能用来读或用来写不能两者同时
+# from io import StringIO
+# strIO = StringIO()
+# strIO.write("hdhdhdhhdhdahjdshasdhkja\n")
+#print(strIO.getvalue())
+#当strIO用write时，用readlines只能读到换行
+# for s in strIO.readlines():
+#     print(str(s.strip()))
+# while True:
+#      s = strIO.readline()
+#      if s == '':
+#          break
+#      print(s.strip())
+#BytesIO 内存读写数据(StringIO为保存所要存储和提供对应的值)_二进制流
+#BytesIO只能用来读或用来写不能两者同时
+from io import BytesIO
+# f = BytesIO()
+# f.write('中文\n英文\n法文\n'.encode('utf-8'))
+# print(f.getvalue())
+# f = BytesIO()
+# f.write(b'\xe4\xb8\xad\xe6\x96\x87\n\xe8\x8b\xb1\xe6\x96\x87\n\xe6\xb3\x95\xe6\x96\x87\n')
+# print(f.read())
 
 
 
