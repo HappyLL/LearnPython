@@ -714,9 +714,12 @@
 # f.close()
 # print(d)
 #可通过d字典去初始化
-
-
-
+#正则表达式
+# re.match(r'[0-9a-zA-Z]{1,18}[\.]{0,1}[0-9a-zA-Z]{1,18}\@[0-9a-zA-Z]{2,18}\.[0-9a-zA-Z]{3}','boll.someone@gmail.com')
+# re.match(r'^\<[a-z\s+A-Z\s+]{0,14}\>\s+[0-9a-zA-Z]{0,18}[\.]{0,1}[0-9a-zA-Z]{1,18}\@[0-9a-zA-Z]{2,18}\.[0-9a-zA-Z]{3
+# }','<Tom Paris> tom@voyager.org')
+#
+# m = re.match(r'\<([a-z\s+A-Z\s+]{0,20})\>\s+([0-9a-zA-Z\.\@]*)','<Tom Paris> tom@voyager.org')
 
 
 
