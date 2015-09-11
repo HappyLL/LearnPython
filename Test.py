@@ -714,6 +714,43 @@
 # f.close()
 # print(d)
 #可通过d字典去初始化
+
+#创建子进程
+# import os
+# def test():
+#     print('the process is starting')
+#     a = 1
+#     pid = os.fork()
+#     #子进程返回的id为0
+#     if pid==0:
+#         a = 0
+#         print('this is child process %s %s %d',(os.getpid(),os.getppid(),a))
+#     else:
+#         print('this is parent process %s %s %d',(os.getpid(),pid,a))
+# test()
+#可以从上述例子得知子进程也是从fork开始的且申拷贝了原来进程中的资源(两个进程中得资源互不干扰)
+
+#创建多进程(多进程中有一个主进程就是当前的入口程序，在当前主进程创建的进程为该主进程的子进程)
+#首先我们先用process来创建一个子进程(process(target=function,args))
+# import os
+# from multiprocessing import Process
+# def processrun(name):
+#      #print('Run child process  %s...' % (os.getpid()))
+#      #print('now process pid %s' % os.getpid())
+#
+# def processtest():
+#     chpro = Process(target=processrun,args=('processrun',))
+#     #启动进程
+#     chpro.start()
+#     #使创建的子进程与父进程同步
+#     chpro.join()
+#     print('processtest end')
+#
+# processtest()
+
+#通过进程池的方式创建子进程
+
+
 #正则表达式
 # re.match(r'[0-9a-zA-Z]{1,18}[\.]{0,1}[0-9a-zA-Z]{1,18}\@[0-9a-zA-Z]{2,18}\.[0-9a-zA-Z]{3}','boll.someone@gmail.com')
 # re.match(r'^\<[a-z\s+A-Z\s+]{0,14}\>\s+[0-9a-zA-Z]{0,18}[\.]{0,1}[0-9a-zA-Z]{1,18}\@[0-9a-zA-Z]{2,18}\.[0-9a-zA-Z]{3
