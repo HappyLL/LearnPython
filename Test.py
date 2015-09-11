@@ -759,6 +759,368 @@
 # m = re.match(r'\<([a-z\s+A-Z\s+]{0,20})\>\s+([0-9a-zA-Z\.\@]*)','<Tom Paris> tom@voyager.org')
 
 
+#将给定的字符串转化为时间戳
+# from datetime import datetime, timedelta, timezone
+# import re
+# #utc+8:00
+# def to_timestamp(dt_str, tz_str):
+#     dt = datetime.strptime(dt_str, '%Y-%m-%d %H:%M:%S')
+#     # re.match(r'([a-zA-Z]{3})([\+\-]{1})(\d{2})(\:)(\d{2})','UTC+07:00').groups()
+#     l = list(re.match(r'([a-zA-Z]{3})([\+\-]{1})(\d{1,2})(\:)(\d{1,2})',tz_str).groups())
+#     if len(l)==0:
+#         return
+#     h = int(l[2])
+#     if l[1]=='-':
+#         h = h*-1;
+#     print(dt,h)
+#     print(dt.timestamp())
+#     tz_utc_h = timezone(timedelta(hours=h))
+#     dt = dt.replace(tzinfo=tz_utc_h)
+#     print(dt.timestamp())
+#
+# to_timestamp('2015-6-1 08:10:30', 'UTC+7:00')
+# to_timestamp('2015-5-31 16:10:30', 'UTC-09:00')
+
+#用来判断当前的字符串是否是字节流还是字符串
+# def p(s):
+#     #t = str.encode('ascii')
+#     if isinstance(s,str):
+#         print('Str')
+#     elif isinstance(s,bytes):
+#         print('Bytes')
+#     print(len(s))
+# p(b'123')
+
+#safe_base64_decode:该函数用于处理那些去掉=号的编码(当前的字节流长度不满足是8的倍数)
+#还有一种方法是将字节流的长度变成4的整数倍因为6*x/4 = 3*x/4 所以x最小为4
+# import base64
+# def safe_base64_decode(s):
+#     if isinstance(s,bytes):
+#         stmp = s.decode('ascii')
+#     else:
+#         stmp = s
+#     length = len(stmp)
+#     if (length*6)%8==0:
+#         stmp.encode('ascii')
+#     else:
+#         while True:
+#             stmp+='='
+#             length+=1
+#             if (length*6)%8==0:
+#                 stmp.encode('ascii')
+#                 break
+#
+#     print(base64.b64decode(stmp))
+#
+# safe_base64_decode(b'YWJjZA==')
+# safe_base64_decode(b'YWJjZA')
+# safe_base64_decode('YWJjZA==')
+# safe_base64_decode('YWJjZA')
+# b1 = 0
+# b2 = 156
+# b3 = 64
+# b4 = 99
+# bs = bytes([b1,b2,b3,b4])
+# print(bs)
+
+#理解big-endian 和 little-endian
+#假如说当前的4个字节: \x38\x8c\x0a\x00
+#当我们用BigEndin时 则在内存中的字节序为 00 0a 8c 38 从低位到高位(高字节存储在高位 低字节存储在低位)
+#当我们用little-Endin时 则在内存中的字节序为 38 8c 0a 00 从低位到高位(int存储的字节序相反)
+#解析判断当前所传的值是否为bmp文件
+# import struct
+# def check_bmp(s):
+#     if len(s)!=30:
+#         return False
+#     t = struct.unpack('<ccIIIIIIHH',s)
+#     s1 = t[0].decode('ascii')
+#     s2 = t[1].decode('ascii')
+#     if s1 == 'B' and s2 =='M':
+#         print('%d,%d' %(t[6],t[7]))
+#     return True
+#
+# t = b'\x42\x4d\x38\x8c\x0a\x00\x00\x00\x00\x00\x36\x00\x00\x00\x28\x00\x00\x00\x80\x02\x00\x00\x68\x01\x00\x00\x01\x00\x18\x00'
+# if check_bmp(t):
+#     print('bmp')
+#判断一个文件是否是bmp文件
+#涉及到文件的读
+#import struct
+#检测某一路径下的文件类型是否满足bmp
+#打开文件后读取内容
+# def check_bmp(path):
+#     with open(path, 'rb') as f:
+#         s = f.read(30)
+#         if len(s) < 30:
+#             return False
+#         s = struct.unpack('<ccIIIIIIHH', s)
+#         #print(s[0].decode('utf-8'),s[1].decode('ascii'))
+#         if s[0]== b'B' and s[1] == b'M':
+#             print('%d,%d' % (s[6],s[7]))
+#             return True
+#
+#         return False
+#
+# if check_bmp('C:\\Users\\happyli\\Desktop\\11.jpg'):
+#     print('BMP')
+
+#将当前传入的字符串转化为MD5hash
+# import hashlib
+# def cal_md5(password):
+#     md5 = hashlib.md5()
+#     md5.update(password.encode('utf-8'))
+#     return md5.hexdigest()
+#
+# print(cal_md5('123456'))
+# print(cal_md5('123456'))
+#登陆的用户的密码是否正确
+# import hashlib
+# db = {
+#       'michael':'e10adc3949ba59abbe56e057f20f883e',
+#       'bob':'878ef96e86145580c38c87f0410ad153',
+#       'alice':'99b1c2188db85afee403b1536010c2c9'
+#       }
+#
+# def login(usr,passward):
+#     md5 = hashlib.md5()
+#     md5.update(passward.encode('utf-8'))
+#     return str(md5.hexdigest())==db[usr]
+#
+# if login('bob','123456'):
+#     print('Login Success')
+#注册和登陆
+# import hashlib
+# db = {}
+#
+# def regist(usr,pwd):
+#     if db.get(usr) != None:
+#         return -1
+#     md5 = hashlib.md5()
+#     md5.update((usr+pwd+'the-Salt').encode('utf-8'))
+#     db[usr] = str(md5.hexdigest())
+#     return 1
+# def login(usr,pwd):
+#     if db.get(usr) == None:
+#         return False
+#     md5 = hashlib.md5()
+#     md5.update((usr+pwd+'the-Salt').encode('utf-8'))
+#     return str(md5.hexdigest()) == db[usr]
+#
+# if login('happy','123456'):
+#     print('login success')
+#
+#
+# if regist('happy','123456'):
+#     print('regist success')
+#
+# if login('happy','12345'):
+#     print('login success')
+
+
+# from xml.parsers.expat import ParserCreate
+#
+# class DefaultSaxHandler(object):
+#     def start_element(self, name, attrs):
+#         if attrs.get('href'):
+#             print('yes')
+#         print('sax:start_element: %s, attrs: %s' % (name, str(attrs)))
+#
+#     def end_element(self, name):
+#         print('sax:end_element: %s' % name)
+#
+#     def char_data(self, text):
+#         print('sax:char_data: %s' % text)
+#
+# xml = r'''<?xml version="1.0"?>
+# <ol>
+#     <li><a href="/python">Python</a></li>
+#     <li><a href="/ruby">Ruby</a></li>
+# </ol>
+# '''
+#
+# handler = DefaultSaxHandler()
+# parser = ParserCreate()
+# parser.StartElementHandler = handler.start_element
+# parser.EndElementHandler = handler.end_element
+# parser.CharacterDataHandler = handler.char_data
+# parser.Parse(xml)
+
+# from xml.parsers.expat import  ParserCreate
+# import re
+#
+# db = {}
+# #tag = False
+# #global tag
+# class weathersaxhandle(object):
+#     global tag
+#     def start_element(self, name, attrs):
+#         if attrs.get('city'):
+#             db['city'] = attrs.get('city')
+#         if attrs.get('country'):
+#             db['country'] = attrs.get('country')
+#         if attrs.get('day'):
+#             tmp = attrs.get('day')
+#             #print(len(db))
+#             if len(db)==2:
+#                 tmp = 'today'
+#             elif len(db)==3:
+#                 tmp = 'tomorrow'
+#             else:
+#                 return
+#             db[tmp] = {}
+#             if attrs.get('text'):
+#                 db[tmp]['text'] =  attrs.get('text')
+#                 #print('yes0')
+#             if attrs.get('low'):
+#                 db[tmp]['low'] = int(attrs.get('low'))
+#                 #print(db[tmp]['low'])
+#             if attrs.get('high'):
+#                 db[tmp]['high'] = int(attrs.get('high'))
+#                 #print('yes2')
+#             #print(len(db))
+#
+#         #print('sax:start_element: %s, attrs: %s' % (name, str(attrs)))
+#     #global tag
+#     def end_element(self, name):
+#         pass
+#
+#     def char_data(self, text):
+#         pass
+#
+# data = r'''<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+# <rss version="2.0" xmlns:yweather="http://xml.weather.yahoo.com/ns/rss/1.0" xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#">
+#     <channel>
+#         <title>Yahoo! Weather - Beijing, CN</title>
+#         <lastBuildDate>Wed, 27 May 2015 11:00 am CST</lastBuildDate>
+#         <yweather:location city="Beijing" region="" country="China"/>
+#         <yweather:units temperature="C" distance="km" pressure="mb" speed="km/h"/>
+#         <yweather:wind chill="28" direction="180" speed="14.48" />
+#         <yweather:atmosphere humidity="53" visibility="2.61" pressure="1006.1" rising="0" />
+#         <yweather:astronomy sunrise="4:51 am" sunset="7:32 pm"/>
+#         <item>
+#             <geo:lat>39.91</geo:lat>
+#             <geo:long>116.39</geo:long>
+#             <pubDate>Wed, 27 May 2015 11:00 am CST</pubDate>
+#             <yweather:condition text="Haze" code="21" temp="28" date="Wed, 27 May 2015 11:00 am CST" />
+#             <yweather:forecast day="Wed" date="27 May 2015" low="20" high="33" text="Partly Cloudy" code="30" />
+#             <yweather:forecast day="Thu" date="28 May 2015" low="21" high="34" text="Sunny" code="32" />
+#             <yweather:forecast day="Fri" date="29 May 2015" low="18" high="25" text="AM Showers" code="39" />
+#             <yweather:forecast day="Sat" date="30 May 2015" low="18" high="32" text="Sunny" code="32" />
+#             <yweather:forecast day="Sun" date="31 May 2015" low="20" high="37" text="Sunny" code="32" />
+#         </item>
+#     </channel>
+# </rss>
+# '''
+# handler = weathersaxhandle()
+# parser = ParserCreate()
+# parser.StartElementHandler = handler.start_element
+# parser.EndElementHandler = handler.end_element
+# parser.CharacterDataHandler = handler.char_data
+# parser.Parse(data)
+#
+#
+# assert db['city'] == 'Beijing', db['city']
+# assert db['country'] == 'China', db['country']
+# assert db['today']['text'] == 'Partly Cloudy', db['today']['text']
+# assert db['today']['low'] == 20, db['today']['low']
+# assert db['today']['high'] == 33, db['today']['high']
+# assert db['tomorrow']['text'] == 'Sunny', db['tomorrow']['text']
+# assert db['tomorrow']['low'] == 21, db['tomorrow']['low']
+# assert db['tomorrow']['high'] == 34, db['tomorrow']['high']
+# print('Weather:', str(db))
+# import re
+# t = re.match(r'([A-Za-z]{3})(,*)', 'Wed, 27 May 2015 11:00 am CST').groups()
+# print(t)
+
+# from html.parser import HTMLParser
+# from html.entities import name2codepoint
+#
+# class MyHTMLParser(HTMLParser):
+#     bTitle = False
+#     bLoca = False
+#     bTime = False
+#
+#     def handle_starttag(self, tag, attrs):
+#         if ('class','event-title') in attrs:
+#             self.bTitle = True
+#         elif ('class','event-location') in attrs:
+#             self.bLoca = True
+#         elif tag=='time':
+#             self.bTime = True
+#
+#     def handle_endtag(self, tag):
+#         if tag=='h3':
+#             self.bTitle = False
+#         elif tag == 'time':
+#             self.bTime = False
+#         elif tag == 'span':
+#             self.bLoca = False
+#         #print('</%s>' % tag)
+#
+#     def handle_startendtag(self, tag, attrs):
+#         print('<%s/>' % tag)
+#
+#     def handle_data(self, data):
+#         if self.bTitle or self.bLoca or self.bTime:
+#             if self.bTitle:
+#                 print('-'*50)
+#             print(str(data).strip())
+#
+#     def handle_comment(self, data):
+#         pass
+#         #print('<!--', data, '-->')
+#
+#     def handle_entityref(self, name):
+#         pass
+#         #print('&%s;' % name)
+#
+#     def handle_charref(self, name):
+#         pass
+#         #print('&#%s;' % name)
+#
+# parser = MyHTMLParser()
+#
+# with open('C:\\Users\\happyli\\Desktop\\python.html','r') as f:
+#     parser.feed(f.read())
+
+
+# from urllib import request
+#
+# with request.urlopen('https://api.douban.com/v2/book/2129650') as f:
+#     data = f.read()
+#     print('Status:', f.status, f.reason)
+#     for k, v in f.getheaders():
+#         print('%s: %s' % (k, v))
+#     print('Data:', data.decode('utf-8'))
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# from urllib import request
+#
+# req = request.Request('http://www.douban.com/')
+# req.add_header('User-Agent', 'Mozilla/6.0 (iPhone; CPU iPhone OS 8_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/8.0 Mobile/10A5376e Safari/8536.25')
+# with request.urlopen(req) as f:
+#     print('Status:', f.status, f.reason)
+#     for k, v in f.getheaders():
+#         print('%s: %s' % (k, v))
+#     print('Data:', f.read().decode('utf-8'))
+
+#硬编码改为从url读取
+# from urllib import request, parse
+# def fetch_xml(url):
+#     with request.urlopen(url) as f:
+#         data = f.read()
+#         print('Data: ',data.decode('utf-8'))
+#
+# fetch_xml('http://weather.yahooapis.com/forecastrss?u=c&w=2151330')
+
+#ip协议负责将数据从一台计算机上通过网络传到另一台计算机上,不能保证顺序到达，和能到达
+#tcp协议保证数据能够顺序到达并且如果发的数据丢失，则重新发送
+#一个IP包包含:目标IP,源IP,数据,端口
+#端口的概念 因为一个计算机可能同时跑着多个网络程序 也就是说可能会收到很多IP包 所以需要通过端口来判断
+#当前IP包对应哪个端口(计算机会给每个网络程序一个或多个端口,且端口是独一无二的 )
+
+
 
 
 
