@@ -1,31 +1,46 @@
-#编写一个客户端向web服务器请求数据(向新浪的web服务器)
-#socket表示打开了一个网络链接
+# #编写一个客户端向web服务器请求数据(向新浪的web服务器)
+# #socket表示打开了一个网络链接
+# import socket
+# #初始化一个socket对象 包括当前本机IP的类型(IPv4协议) 和socket.SOCK_STREAM:表示面向流的TCP协议
+# #初始化了TCP对象 但还未建立链接
+# sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# #建立链接的地址(链接的IP地址,端口)
+# #知道端口号的作用是客户端是向服务器的那个进程请求
+# sk.connect(('www.sina.com.cn', 80))
+# #向服务端发送数据
+# sk.send(b'GET / HTTP/1.1\r\nHost: www.sina.com.cn\r\nConnection: close\r\n\r\n')
+# #收到服务端给予的数据(字节流)
+# buffer = []
+# while True:
+#     d = sk.recv(1024)
+#     if d:
+#         buffer.append(d)
+#     else:
+#         data = b''.join(buffer)
+#         break
+# sk.close()
+#
+# print(data)
+# header,html = data.split(b'\r\n\r\n',1)
+#
+# print(header)
+# print("")
+# print(html)
+#
+# with open('/Users/lijiayueee/Documents/learnPython/Client/sina.html','wb') as f:
+#     f.write(html)
+
+#客户端进程编写
 import socket
-#初始化一个socket对象 包括当前本机IP的类型(IPv4协议) 和socket.SOCK_STREAM:表示面向流的TCP协议
-#初始化了TCP对象 但还未建立链接
-sk = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#建立链接的地址(链接的IP地址,端口)
-#知道端口号的作用是客户端是向服务器的那个进程请求
-sk.connect(('www.sina.com.cn', 80))
-#向服务端发送数据
-sk.send(b'GET / HTTP/1.1\r\nHost: www.sina.com.cn\r\nConnection: close\r\n\r\n')
-#收到服务端给予的数据(字节流)
-buffer = []
-while True:
-    d = sk.recv(1024)
-    if d:
-        buffer.append(d)
-    else:
-        data = b''.join(buffer)
-        break
-sk.close()
+clientsk = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+clientsk.connect(('127.0.0.1',9999))
+data = clientsk.recv(1024)
+print(data.decode('utf-8'))
+namelist = [b'Lisa',b'Tom',b'function']
+for name in namelist:
+    clientsk.send(name)
+    data = clientsk.recv(1024)
+    print(data.decode('utf-8'))
 
-print(data)
-header,html = data.split(b'\r\n\r\n',1)
-
-print(header)
-print("")
-print(html)
-
-with open('/Users/lijiayueee/Documents/learnPython/Client/sina.html','wb') as f:
-    f.write(html)
+clientsk.send(b'exit')
+clientsk.close()
